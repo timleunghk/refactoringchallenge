@@ -23,6 +23,12 @@ Docker image in App and SQL Server!
 
 ## Project structure
 
+### Database Setup
+- Docker Setup for SQL Server 2017 Docker version
+- SQL script for creating Northwind Database
+
+### Program
+
 - RefactoringChallenge.API
   - Controllers
   - DockerFile for Docker Image Setup
