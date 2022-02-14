@@ -1,0 +1,34 @@
+#See https://aka.ms/containerfastmode to understand how Visual Studio uses this Dockerfile to build your images for faster debugging.
+
+
+
+
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+EXPOSE 1444
+EXPOSE 1445
+RUN sed -i 's/TLSv1.2/TLSv1.0/g' /etc/ssl/openssl.cnf
+
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+WORKDIR /src
+COPY ["RefactoringChallenge.API/RefactoringChallenge.API.csproj", "RefactoringChallenge.API/"]
+RUN dotnet restore "RefactoringChallenge.API/RefactoringChallenge.API.csproj"
+COPY . .
+WORKDIR "/src/RefactoringChallenge.API"
+RUN dotnet build "RefactoringChallenge.API.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "RefactoringChallenge.API.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+ENTRYPOINT ["dotnet", "RefactoringChallenge.API.dll"]
+
+
+
+
+
+# docker run -e 'ACCEPT_EULA=Y' -e 'MSSQL_SA_PASSWORD=<YourStrong!Passw0rd>' -p 1433:1433 -v sqlvolume:/var/opt/mssql -d mcr.microsoft.com/mssql/server:2019-latest

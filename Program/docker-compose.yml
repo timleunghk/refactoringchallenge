@@ -1,0 +1,8 @@
+version: '3.4'
+
+services:
+  refactoringchallenge.api:
+    image: ${DOCKER_REGISTRY-}refactoringchallengeapi
+    build:
+      context: .
+      dockerfile: RefactoringChallenge.API/Dockerfile
